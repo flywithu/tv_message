@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "TV 메시지",
+        "description": "메시지를 표시할 TV의 IP 주소를 입력하세요. TV가 꺼져 있어도 등록할 수 있습니다.",
+        "data": {
+          "name": "이름",
+          "host": "TV IP 주소",
+          "protocol": "전송 방식 (auto = DLNA 후 Cast)",
+          "dlna_port": "DLNA 포트",
+          "base_url": "HA 주소 (선택, 예: http://192.168.10.5:8123)"
+        }
+      }
+    },
+    "error": { "invalid_host": "잘못된 주소입니다" },
+    "abort": { "already_configured": "이미 등록된 TV입니다" }
+  },
+  "options": {
+    "step": { "init": { "data": { "protocol": "전송 방식" } } }
+  },
+  "services": {
+    "show": {
+      "name": "메시지 표시",
+      "description": "TV 화면에 메시지를 표시합니다. TV가 막 켜졌다면 응답할 때까지 재시도합니다.",
+      "fields": {
+        "message": { "name": "메시지", "description": "표시할 문구 (줄바꿈 가능)" },
+        "duration": { "name": "표시 시간(초)", "description": "이 시간이 지나면 화면에서 내립니다." },
+        "host": { "name": "TV 주소", "description": "비우면 등록된 모든 TV에 표시합니다." },
+        "background_color": { "name": "배경색", "description": "#RRGGBB" },
+        "text_color": { "name": "글자색", "description": "#RRGGBB" },
+        "wait_for_tv": { "name": "TV 대기(초)", "description": "TV가 응답할 때까지 재시도하는 최대 시간" }
+      }
+    },
+    "clear": {
+      "name": "메시지 내리기",
+      "description": "표시 중인 메시지를 즉시 중지합니다.",
+      "fields": { "host": { "name": "TV 주소", "description": "비우면 모든 TV" } }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "TV Message",
+        "description": "Enter the TV's IP address. The TV may be off while you set it up.",
+        "data": {
+          "name": "Name",
+          "host": "TV IP address",
+          "protocol": "Protocol (auto = DLNA, then Cast)",
+          "dlna_port": "DLNA port",
+          "base_url": "HA URL (optional, e.g. http://192.168.10.5:8123)"
+        }
+      }
+    },
+    "error": { "invalid_host": "Invalid address" },
+    "abort": { "already_configured": "This TV is already configured" }
+  },
+  "options": {
+    "step": { "init": { "data": { "protocol": "Protocol" } } }
+  },
+  "services": {
+    "show": {
+      "name": "Show message",
+      "description": "Show a message on the TV screen. Retries while a just-powered-on TV wakes up.",
+      "fields": {
+        "message": { "name": "Message", "description": "Text to show (newlines allowed)" },
+        "duration": { "name": "Duration (s)", "description": "Remove the message after this many seconds." },
+        "host": { "name": "TV address", "description": "Leave empty to target every configured TV." },
+        "background_color": { "name": "Background", "description": "#RRGGBB" },
+        "text_color": { "name": "Text color", "description": "#RRGGBB" },
+        "wait_for_tv": { "name": "Wait for TV (s)", "description": "Maximum time to keep retrying until the TV answers" }
+      }
+    },
+    "clear": {
+      "name": "Clear message",
+      "description": "Stop the message that is currently shown.",
+      "fields": { "host": { "name": "TV address", "description": "Leave empty for all TVs" } }
+    }
+  }
+}

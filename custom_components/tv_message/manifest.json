@@ -1,0 +1,12 @@
+{
+  "domain": "tv_message",
+  "name": "TV Message",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://github.com/flywithu/tv_message",
+  "issue_tracker": "https://github.com/flywithu/tv_message/issues",
+  "codeowners": [],
+  "dependencies": ["http"],
+  "requirements": ["pychromecast>=13.0.0"],
+  "iot_class": "local_push"
+}

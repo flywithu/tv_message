@@ -30,6 +30,17 @@ blueprint:
           min: 1
           max: 600
           unit_of_measurement: s
+    repeat_minutes:
+      name: 반복 간격(분)
+      description: >
+        0이면 TV가 켜질 때 한 번만 표시합니다. 1 이상이면 TV가 켜져 있고
+        시간대 안인 동안 이 간격(분)마다 다시 표시합니다. (시계의 분 기준: 예 10 → :00, :10, :20 ...)
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 120
+          unit_of_measurement: min
     start_time:
       name: 시작 시각
       default: "22:00:00"
@@ -58,16 +69,31 @@ blueprint:
 
 mode: restart
 
+variables:
+  repeat_minutes: !input repeat_minutes
+
 trigger:
   - platform: state
     entity_id: !input tv_entity
     to: "on"
+    id: tv_on
+  - platform: time_pattern
+    minutes: "/1"
+    id: tick
 
 condition:
   - condition: time
     after: !input start_time
     before: !input end_time
     weekday: !input weekdays
+  - condition: state
+    entity_id: !input tv_entity
+    state: "on"
+  - condition: template
+    value_template: >
+      {{ trigger.id == 'tv_on'
+         or (repeat_minutes | int(0) > 0
+             and (now().hour * 60 + now().minute) % (repeat_minutes | int) == 0) }}
 
 action:
   - service: tv_message.show

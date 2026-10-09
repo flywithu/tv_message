@@ -46,22 +46,36 @@ PC 방화벽에서 TV가 접속할 포트(기본 8765/TCP)를 허용해야 합�
   - TV가 막 켜진 직후에는 응답까지 몇 초 걸려서 `wait_for_tv`(기본 30초) 동안 재시도합니다.
 - `tv_message.clear` : 표시 중인 메시지 즉시 내리기
 
-### 시나리오: TV가 켜지면 지정 시간대에 메시지
+### 시나리오: TV가 켜지면 지정 시간대에 메시지 (반복 가능)
 
-`blueprints/automation/tv_message/tv_on_message.yaml`을 HA 설정 폴더의 `blueprints/automation/tv_message/`에 복사한 뒤
-설정 → 자동화 → 블루프린트에서 만들거나, 직접 작성:
+블루프린트 `blueprints/automation/tv_message/tv_on_message.yaml`을 HA 설정 폴더의
+`blueprints/automation/tv_message/`에 복사한 뒤 설정 → 자동화 → 블루프린트에서 만듭니다.
+
+- TV가 **켜지는 순간** 시간대 안이면 메시지를 한 번 표시합니다.
+- **반복 간격(분)** 이 1 이상이면, TV가 켜져 있고 시간대 안인 동안 그 간격마다 다시 표시합니다. 0이면 한 번만.
+- 메시지는 `duration`초 뒤에 자동으로 내려갑니다.
+
+직접 작성하는 예시 (TV가 켜져 있는 동안 10분마다 10초씩):
 
 ```yaml
 automation:
   - alias: 취침시간 TV 안내
+    mode: restart
     trigger:
       - platform: state
         entity_id: media_player.samsung_tv   # TV 켜짐 상태를 알려주는 엔티티
         to: "on"
+        id: tv_on
+      - platform: time_pattern
+        minutes: "/10"
+        id: tick
     condition:
       - condition: time
         after: "22:00:00"
         before: "06:00:00"    # 자정을 넘기는 시간대도 가능
+      - condition: state
+        entity_id: media_player.samsung_tv
+        state: "on"
     action:
       - service: tv_message.show
         data:
